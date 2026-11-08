@@ -53,3 +53,126 @@ Form 12C is included only as a summary from the ECI Citizen Service Portal, whic
 - https://www.eci.gov.in/faq/en/how-to-register/
 - https://www.eci.gov.in/faq/2/9
 - https://voters.eci.gov.in/
+
+## Day 3 – ECI Data Ingestion & Processing
+
+### Objective
+Collect official ECI forms and FAQ documents, extract relevant information, and convert it into structured JSON records.
+
+### Tasks Completed
+- Downloaded five ECI forms: Form 6, 6A, 6B, 7 and 8.
+- Collected the official ECI Electoral Roll FAQ PDF.
+- Implemented PDF text extraction using **PyPDF**.
+- Created `app/ingest.py` to clean and process extracted data.
+- Added error handling for missing files and malformed records.
+- Generated structured records in `data/records.json`.
+
+### Dataset Summary
+
+| Record Type | Count |
+|---|---:|
+| ECI Forms | 5 |
+| FAQs | 14 |
+| **Total Records** | **19** |
+
+### Key Files
+- `app/ingest.py` – PDF extraction and data processing.
+- `app/models.py` – Record dataclass.
+- `data/raw/` – Original ECI PDF documents.
+- `data/records.json` – Processed dataset.
+
+### Technologies Used
+Python, PyPDF, JSON, Regular Expressions.
+
+**Outcome:** Successfully generated 19 structured MatdarMitra records from official ECI documents.
+
+
+# Day 4 – FastAPI, Smart Search & Data Analysis
+
+## Objective
+
+Develop a FastAPI service for MatdarMitra, implement intelligent record searching using TF-IDF and cosine similarity, and explore the dataset using pandas.
+
+## Tasks Completed
+
+### S1 – FastAPI Service
+
+Created `app/main.py` using FastAPI with the following endpoints:
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health` | Checks API health status |
+| GET | `/records?limit=10` | Retrieves records with a specified limit |
+| GET | `/records/{record_id}` | Retrieves a record by ID; returns 404 if missing |
+| GET | `/search?q=keyword` | Searches records using smart search |
+| POST | `/questions` | Accepts voter-related questions and returns relevant records |
+
+### S2 – Data Analysis and Smart Search
+
+**1. Data Exploration – `analysis/explore.py`**
+
+Used pandas to analyze MatdarMitra records and print three facts:
+
+- Total number of records.
+- Distribution of records by type.
+- Distribution of records by category.
+
+**2. Smart Search – `app/smart_search.py`**
+
+Implemented intelligent search using:
+
+- TF-IDF (Term Frequency–Inverse Document Frequency) for text vectorization.
+- Cosine Similarity for measuring query-to-record similarity.
+- Ranking of records based on similarity scores.
+
+Integrated smart search with the `/search` API endpoint.
+
+## Technologies Used
+
+- Python
+- FastAPI
+- Uvicorn
+- Pandas
+- Scikit-learn
+- TF-IDF
+- Cosine Similarity
+
+## How to Run
+
+### 1. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 2. Run data exploration
+
+```bash
+python -m analysis.explore
+```
+
+### 3. Start FastAPI server
+
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+### 4. Open Swagger API documentation
+
+http://127.0.0.1:8000/docs
+
+## Day 4 Deliverables
+
+- FastAPI application created.
+- Five required API endpoints implemented.
+- Pandas-based data exploration completed.
+- TF-IDF and cosine similarity smart search implemented.
+- Smart search integrated with FastAPI.
+- API documentation available through Swagger UI.
+
+## Week 1 Milestone
+
+Day 4 completes the Week 1 development milestone for MatdarMitra.
+
+**Project:** MatdarMitra – ECI Voter Registration Assistance System  
+**Track:** GenAI Examate – Sanjivani SJ-19
