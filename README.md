@@ -173,6 +173,3 @@ http://127.0.0.1:8000/docs
 ## Week 1 Milestone
 
 Day 4 completes the Week 1 development milestone for MatdarMitra.
-
-**Project:** MatdarMitra – ECI Voter Registration Assistance System  
-**Track:** GenAI Examate – Sanjivani SJ-19
