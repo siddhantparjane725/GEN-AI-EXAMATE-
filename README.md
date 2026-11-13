@@ -173,3 +173,49 @@ http://127.0.0.1:8000/docs
 ## Week 1 Milestone
 
 Day 4 completes the Week 1 development milestone for MatdarMitra.
+<<<<<<< HEAD
+=======
+
+**Project:** MatdarMitra – ECI Voter Registration Assistance System  
+**Track:** GenAI Examate – Sanjivani SJ-19
+
+
+## Day 5 – LLM Fundamentals & Checkpoint 1
+
+### Objective
+Understand how Large Language Models (LLMs) work, document real-world MatdarMitra user questions, and demonstrate the working FastAPI application.
+
+### Tasks Completed
+
+**1. LLM Documentation**
+- Created `docs/how_llms_work.md`.
+- Explained tokenization, embeddings, transformers, attention mechanisms and next-token prediction.
+- Added an LLM workflow diagram using Mermaid.
+- Documented how LLMs can support MatdarMitra.
+
+**2. Real User Questions**
+- Created `docs/user_questions.md`.
+- Added 10 realistic voter registration questions.
+- Included questions about Forms 6, 6A, 6B, 7 and 8.
+- Identified a question about ward-wise BLO contact information that the current dataset cannot answer.
+
+**3. Checkpoint 1 – FastAPI Demonstration**
+- Successfully started the FastAPI server using Uvicorn.
+- Verified API documentation through Swagger UI at `/docs`.
+- Demonstrated the available API endpoints.
+- Prepared an explanation of the `smart_search()` function using TF-IDF and cosine similarity.
+
+### Key Files
+
+- `docs/how_llms_work.md` – LLM concepts and workflow diagram.
+- `docs/user_questions.md` – 10 MatdarMitra user questions.
+- `app/main.py` – FastAPI application.
+- `app/smart_search.py` – Intelligent record search.
+
+### Technologies Used
+
+Python, FastAPI, Uvicorn, TF-IDF, Cosine Similarity, Mermaid and Markdown.
+
+### Outcome
+
+Completed LLM fundamentals documentation, prepared 10 realistic user questions, and demonstrated the MatdarMitra FastAPI application as part of Checkpoint 1.
