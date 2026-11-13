@@ -180,6 +180,11 @@ Day 4 completes the Week 1 development milestone for MatdarMitra.
 **Track:** GenAI Examate – Sanjivani SJ-19
 
 
+**Project:** MatdarMitra – ECI Voter Registration Assistance System  
+**Track:** GenAI Examate – Sanjivani SJ-19
+
+---
+
 ## Day 5 – LLM Fundamentals & Checkpoint 1
 
 ### Objective
@@ -206,16 +211,58 @@ Understand how Large Language Models (LLMs) work, document real-world MatdarMitr
 - Prepared an explanation of the `smart_search()` function using TF-IDF and cosine similarity.
 
 ### Key Files
-
 - `docs/how_llms_work.md` – LLM concepts and workflow diagram.
 - `docs/user_questions.md` – 10 MatdarMitra user questions.
 - `app/main.py` – FastAPI application.
 - `app/smart_search.py` – Intelligent record search.
 
 ### Technologies Used
-
 Python, FastAPI, Uvicorn, TF-IDF, Cosine Similarity, Mermaid and Markdown.
 
 ### Outcome
-
 Completed LLM fundamentals documentation, prepared 10 realistic user questions, and demonstrated the MatdarMitra FastAPI application as part of Checkpoint 1.
+
+### Day 6 – LLM Integration with Groq
+Objective
+Integrate a Large Language Model (LLM) into MatdarMitra so users can ask voter-registration questions in natural language and receive answers grounded in the retrieved Election Commission of India (ECI) records.
+Tasks Completed
+- Created app/llm.py to handle the LLM integration.
+- Configured Groq as the initial LLM provider.
+- Integrated the POST /chat endpoint into the existing FastAPI application.
+- Added environment-based configuration using .env and .env.example.
+- Kept the actual API key in the local .env file; .env must not be committed to GitHub.
+- Created the prompts/ directory with:
+  - ## task_prompt_1.txt – form and information identification.
+  - ##  task_prompt_2.txt – step-by-step procedural guidance.
+- Configured /chat to return a JSON response with:
+  - answer
+  - confidence
+  - follow_up
+- Created eval/prompt_compare.md to document the comparison of the two task-prompt approaches using the 10 questions in docs/user_questions.md.
+API Test
+The POST /chat endpoint was tested successfully through FastAPI Swagger UI.
+
+Example request:
+{
+  "question": "Which form should I use to correct my name spelling?",
+  "prompt_version": "2"
+}
+Observed test: Groq returned a successful 200 OK response. MatdarMitra identified Form 8 for name-spelling correction and referenced FAQ-26 in the retrieved ECI context.
+Prompt Design Comparison
+- Prompt 1 focuses on identifying the relevant form, purpose, intended user, documents, and submission information from the retrieved records.
+- Prompt 2 focuses on explaining a supported form or procedure in simple steps and asking a relevant follow-up question.
+The prompt comparison document records the evaluation questions, criteria, prompt-design differences, available test evidence, and safety checks. Only observed test results should be described as live test evidence; do not claim unrecorded outputs or scores.
+Day 6 Outcome
+MatdarMitra now has a Groq-powered /chat endpoint connected to the existing TF-IDF retrieval workflow. The response format includes an answer, confidence value, and follow-up question. Answers must remain grounded in the available ECI records, and missing information such as verified ward-wise BLO contacts must not be invented.
+Run the Application
+Install dependencies if they are not already installed:
+pip install -r requirements.txt
+Set the local .env file in the project root:
+LLM_PROVIDER=groq
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=llama-3.3-70b-versatile
+Start FastAPI:
+python -m uvicorn app.main:app --reload
+Open the interactive API documentation:
+http://127.0.0.1:8000/docs
+Use POST /chat to test the Groq-powered
