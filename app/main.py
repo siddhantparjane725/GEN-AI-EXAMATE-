@@ -5,12 +5,22 @@ from pydantic import BaseModel, Field
 from app.records import load_records, get_by_id
 from app.smart_search import smart_search
 
+from fastapi import HTTPException
+from pydantic import BaseModel, Field
+
+from app.records import load_records
+from app.llm import chat_with_matdarmitra
+import requests
+
 app = FastAPI(
     title="MatdarMitra API",
     description="ECI voter registration assistance API",
     version="1.0.0"
 )
 
+class ChatRequest(BaseModel):
+    question: str = Field(..., min_length=1)
+    prompt_version: str = "1"
 
 class QuestionRequest(BaseModel):
     question: str = Field(..., min_length=1)
@@ -108,3 +118,27 @@ def ask_question(request: QuestionRequest):
         ),
         "results": results
     }
+@app.post("/chat")
+def chat(request: ChatRequest):
+    try:
+        records = load_records()
+
+        result = chat_with_matdarmitra(
+            question=request.question,
+            records=records,
+            prompt_version=request.prompt_version
+        )
+
+        return result
+
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=502,
+            detail="Unable to connect to Groq. Please try again."
+        )
+
+    except RuntimeError as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )

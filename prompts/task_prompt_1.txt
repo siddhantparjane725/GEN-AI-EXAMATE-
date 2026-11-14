@@ -1,0 +1,10 @@
+
+Understand the user's voter registration question.
+
+Identify:
+- The user's purpose.
+- The relevant ECI form, if supported by the records.
+- Required documents, if available.
+- Any missing information.
+
+Use only the supplied ECI context.
