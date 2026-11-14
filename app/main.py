@@ -1,16 +1,13 @@
 
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
+import requests
 
 from app.records import load_records, get_by_id
 from app.smart_search import smart_search
-
-from fastapi import HTTPException
-from pydantic import BaseModel, Field
-
-from app.records import load_records
 from app.llm import chat_with_matdarmitra
-import requests
+from app.embed import embed_texts
+from app.vectorstore import search_documents, collection
 
 app = FastAPI(
     title="MatdarMitra API",
@@ -18,9 +15,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
+
 class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1)
     prompt_version: str = "1"
+
 
 class QuestionRequest(BaseModel):
     question: str = Field(..., min_length=1)
@@ -118,6 +117,9 @@ def ask_question(request: QuestionRequest):
         ),
         "results": results
     }
+
+
+# 6. Chat with MatdarMitra
 @app.post("/chat")
 def chat(request: ChatRequest):
     try:
@@ -141,4 +143,53 @@ def chat(request: ChatRequest):
         raise HTTPException(
             status_code=500,
             detail=str(error)
+        )
+
+
+# 7. Semantic search using ChromaDB
+@app.get("/search/semantic")
+def semantic_search(
+    q: str = Query(..., min_length=1),
+    limit: int = Query(default=3, ge=1, le=10)
+):
+    try:
+        if collection.count() == 0:
+            raise HTTPException(
+                status_code=503,
+                detail="Vector database is empty. Index documents first."
+            )
+
+        query_embedding = embed_texts(
+            [q],
+            task_type="RETRIEVAL_QUERY"
+        )[0]
+
+        results = search_documents(
+            query_embedding,
+            top_k=min(limit, collection.count())
+        )
+
+        matches = []
+
+        for i in range(len(results["ids"][0])):
+            matches.append({
+                "chunk_id": results["ids"][0][i],
+                "text": results["documents"][0][i],
+                "metadata": results["metadatas"][0][i],
+                "distance": results["distances"][0][i]
+            })
+
+        return {
+            "query": q,
+            "results_count": len(matches),
+            "results": matches
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Semantic search failed: {str(error)}"
         )

@@ -266,3 +266,74 @@ python -m uvicorn app.main:app --reload
 Open the interactive API documentation:
 http://127.0.0.1:8000/docs
 Use POST /chat to test the Groq-powered
+
+
+## Day 7 – Semantic Search and Vector Database
+
+### Objective
+Implement semantic search for MatdarMitra using Gemini embeddings and ChromaDB to retrieve relevant Election Commission of India (ECI) documents.
+
+### 1. PDF Chunking
+- Created `app/chunking.py`.
+- Extracted text from 6 ECI PDF documents.
+- Generated 34 text chunks.
+- Preserved metadata for every chunk:
+  - Chunk ID
+  - Document title
+  - Source PDF
+  - Page number
+  - Extracted text
+
+### 2. Gemini Embeddings
+- Created `app/embed.py`.
+- Integrated Google's Gemini embedding model (`gemini-embedding-001`).
+- Generated 768-dimensional embedding vectors.
+- Successfully embedded all 34 chunks.
+- Saved embeddings in `data/embedded_chunks.json`.
+
+### 3. Semantic Search
+- Created `app/semantic_search.py`.
+- Implemented query embedding generation.
+- Used cosine similarity to find relevant document chunks.
+- Retrieved the top 3 matching results.
+- Prepared a 10-question evaluation script.
+- Saved search evaluation results in `eval/search_results.md`.
+
+### 4. ChromaDB Vector Database
+- Created `app/vectorstore.py`.
+- Integrated persistent ChromaDB storage.
+- Created collection: `matdarmitra_documents`.
+- Indexed all 34 document chunks with their embeddings and metadata.
+- Stored the database in `data/chroma_db/`.
+
+### 5. FastAPI Integration
+Added a new endpoint:
+
+`GET /search/semantic?q=`
+
+Features:
+- Accepts natural-language questions.
+- Generates Gemini query embeddings.
+- Searches the ChromaDB collection.
+- Returns matching document text, source, page number, chunk ID and distance.
+
+### 6. API Testing
+
+Tested the semantic search endpoint through FastAPI Swagger UI.
+
+Example question:
+
+`What documents are needed with Form 6?`
+
+Verified results included:
+- Form 6 – Page 2
+- Form 6 – Page 1
+- Form 6B – Page 1
+
+The first two retrieved results contained relevant age-proof and residence-proof information.
+
+### Day 7 Outcome
+
+Successfully implemented a semantic retrieval pipeline that connects ECI PDF documents, Gemini embeddings, ChromaDB and FastAPI.
+
+**Technologies Used:** Python, Google Gemini API, ChromaDB, FastAPI, Scikit-learn, Cosine Similarity, PyPDF.

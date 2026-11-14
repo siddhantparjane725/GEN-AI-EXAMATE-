@@ -6,3 +6,5 @@ requests
 pypdf
 python-dotenv
 requests
+google-genai
+chromadb
