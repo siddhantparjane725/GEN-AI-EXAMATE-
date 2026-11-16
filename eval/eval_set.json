@@ -1,0 +1,93 @@
+
+[
+  {
+    "id": 1,
+    "question": "What documents are needed with Form 6?",
+    "expected_sources": ["6.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 2,
+    "question": "Which form is used to correct a spelling mistake in my name on the electoral roll?",
+    "expected_sources": ["8.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 3,
+    "question": "Who can object to the inclusion of a person's name in the voter list?",
+    "expected_sources": ["7.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 4,
+    "question": "What documents can be used as proof of age for new voter registration?",
+    "expected_sources": ["6.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 5,
+    "question": "How can the name of a deceased person be removed from the electoral roll?",
+    "expected_sources": ["7.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 6,
+    "question": "Who is the BLO for ward 5 in Kopargaon?",
+    "expected_sources": [],
+    "answerable": false
+  },
+  {
+    "id": 7,
+    "question": "How can an Indian citizen living abroad register as a voter?",
+    "expected_sources": ["6a.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 8,
+    "question": "Is Aadhaar mandatory for voter registration?",
+    "expected_sources": ["6.pdf", "6b.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 9,
+    "question": "Which form should I use after shifting my residence?",
+    "expected_sources": ["8.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 10,
+    "question": "Can I submit my voter registration application online?",
+    "expected_sources": ["Final-ER-FAQ.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 11,
+    "question": "Which form is used to change personal details in the electoral roll?",
+    "expected_sources": ["8.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 12,
+    "question": "Which form is used to object to an incorrect entry in the electoral roll?",
+    "expected_sources": ["7.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 13,
+    "question": "What proof of residence can be attached with Form 6?",
+    "expected_sources": ["6.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 14,
+    "question": "What is Form 6B used for?",
+    "expected_sources": ["6b.pdf"],
+    "answerable": true
+  },
+  {
+    "id": 15,
+    "question": "What should an applicant do if none of the listed age proof documents is available?",
+    "expected_sources": ["6.pdf"],
+    "answerable": true
+  }
+]

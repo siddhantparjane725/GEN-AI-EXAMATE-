@@ -337,3 +337,52 @@ The first two retrieved results contained relevant age-proof and residence-proof
 Successfully implemented a semantic retrieval pipeline that connects ECI PDF documents, Gemini embeddings, ChromaDB and FastAPI.
 
 **Technologies Used:** Python, Google Gemini API, ChromaDB, FastAPI, Scikit-learn, Cosine Similarity, PyPDF.
+
+## Day 8 – RAG Implementation and Evaluation
+
+### 1. Retrieval-Augmented Generation (RAG)
+- Created `app/rag.py`.
+- Integrated ChromaDB semantic retrieval with the Groq LLM.
+- Retrieved relevant ECI document chunks for user questions.
+- Generated answers using retrieved context only.
+- Added citations containing source PDF and page number.
+- Added a fallback response when relevant information is unavailable.
+
+### 2. FastAPI Integration
+Added `POST /ask` to the MatdarMitra API.
+
+The endpoint returns:
+- Generated answer
+- Confidence
+- Follow-up question
+- Source citations
+- Retrieved chunk IDs
+
+Q6 (ward-wise BLO details for Kopargaon) is handled with the required "I don't know" response.
+
+### 3. Evaluation Dataset
+- Created `eval/eval_set.json`.
+- Added 15 evaluation questions.
+- Included answerable and unanswerable questions.
+- Marked expected source documents for evaluation.
+
+### 4. Retrieval Configuration Comparison
+
+| Configuration | Chunk Size | Top K | Source Hits | Hit Rate |
+|---|---:|---:|---:|---:|
+| Config A | 800 words | 3 | 14/14 | 100% |
+| Config B | 800 words | 5 | 14/14 | 100% |
+
+**Selected Configuration: Config A**
+
+Both configurations achieved the same source hit rate. Config A was selected because it retrieves fewer chunks, reducing unnecessary context.
+
+Note: This experiment compares top-k values while keeping chunk size fixed at 800 words.
+
+### 5. Evaluation Script
+- Created `eval/run_eval.py`.
+- Executed both retrieval configurations.
+- Saved results in `eval/eval_results.md`.
+
+### Day 8 Outcome
+Implemented a RAG-based question-answering system with source citations, a controlled fallback for unanswerable questions, and a two-configuration retrieval evaluation.

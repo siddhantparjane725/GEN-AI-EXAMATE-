@@ -8,6 +8,7 @@ from app.smart_search import smart_search
 from app.llm import chat_with_matdarmitra
 from app.embed import embed_texts
 from app.vectorstore import search_documents, collection
+from app.rag import answer_question
 
 app = FastAPI(
     title="MatdarMitra API",
@@ -19,6 +20,9 @@ app = FastAPI(
 class ChatRequest(BaseModel):
     question: str = Field(..., min_length=1)
     prompt_version: str = "1"
+
+class AskRequest(BaseModel):
+    question: str = Field(..., min_length=1)
 
 
 class QuestionRequest(BaseModel):
@@ -192,4 +196,24 @@ def semantic_search(
         raise HTTPException(
             status_code=500,
             detail=f"Semantic search failed: {str(error)}"
+        )
+# 8. RAG-based question answering
+@app.post("/ask")
+def ask(request: AskRequest):
+    try:
+        return answer_question(
+            question=request.question,
+            top_k=3
+        )
+
+    except requests.RequestException:
+        raise HTTPException(
+            status_code=502,
+            detail="Unable to connect to Groq or Gemini."
+        )
+
+    except RuntimeError as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
         )
