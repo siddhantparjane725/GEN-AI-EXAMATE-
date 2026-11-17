@@ -9,12 +9,19 @@ from app.llm import chat_with_matdarmitra
 from app.embed import embed_texts
 from app.vectorstore import search_documents, collection
 from app.rag import answer_question
+from app.graph import start_agent, resume_agent
+from langgraph.types import Command
 
 app = FastAPI(
     title="MatdarMitra API",
     description="ECI voter registration assistance API",
     version="1.0.0"
 )
+
+class AgentRequest(BaseModel):
+    question: str | None = None
+    thread_id: str
+    approved: bool | None = None
 
 
 class ChatRequest(BaseModel):
@@ -213,6 +220,50 @@ def ask(request: AskRequest):
         )
 
     except RuntimeError as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
+
+    # Day 9: LangGraph Agent API
+@app.post("/agent")
+def agent_endpoint(request: AgentRequest):
+    try:
+        if request.approved is None:
+            if not request.question or not request.question.strip():
+                raise HTTPException(
+                    status_code=400,
+                    detail="Question is required to start an agent."
+                )
+
+            result = start_agent(
+                request.question,
+                request.thread_id
+            )
+        else:
+            result = resume_agent(
+                request.thread_id,
+                request.approved
+            )
+
+        if result.get("__interrupt__"):
+            approval = result["__interrupt__"][0].value
+
+            return {
+                "status": "approval_required",
+                "thread_id": request.thread_id,
+                "approval_request": approval
+            }
+
+        return {
+            "status": "completed",
+            "thread_id": request.thread_id,
+            "answer": result.get("answer", "")
+        }
+
+    except HTTPException:
+        raise
+    except Exception as error:
         raise HTTPException(
             status_code=500,
             detail=str(error)

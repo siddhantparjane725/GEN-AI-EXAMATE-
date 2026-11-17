@@ -386,3 +386,75 @@ Note: This experiment compares top-k values while keeping chunk size fixed at 80
 
 ### Day 8 Outcome
 Implemented a RAG-based question-answering system with source citations, a controlled fallback for unanswerable questions, and a two-configuration retrieval evaluation.
+
+
+## Day 9 – AI Agent and LangGraph Integration
+
+### Objective
+Build an intelligent agent that selects the appropriate tool, retrieves voter information, calculates qualifying dates, and supports human approval before execution.
+
+### Features Implemented
+
+1. **Qualifying Date Calculator**
+   - Calculates the 17th and 18th birthdays.
+   - Determines the next ECI qualifying date.
+   - Identifies potential advance-application eligibility.
+   - Validates invalid and future dates.
+
+2. **Handwritten Agent**
+   - Implemented in `app/agent_loop.py`.
+   - Routes date-related questions to the calculator.
+   - Routes voter-information questions to the RAG system.
+   - Requests DOB when it is missing.
+
+3. **LangGraph Agent**
+   - Implemented in `app/graph.py`.
+   - Uses a StateGraph workflow.
+   - Supports human approval and rejection.
+   - Uses MemorySaver to retain workflow state between requests.
+
+4. **FastAPI Integration**
+   - Added `POST /agent`.
+   - Supports approval requests and workflow resumption.
+   - Exposes agent functionality through Swagger UI.
+
+### Testing
+
+Automated tests are available in the `tests/` directory.
+
+- Date calculation and validation
+- Agent tool selection
+- RAG routing
+- Human approval and rejection
+
+Run tests:
+
+```bash
+python -m pytest tests/ -v
+```
+
+### Day 9 Architecture
+
+```text
+User Question
+     |
+     v
+Tool Selection
+     |
+     v
+Human Approval
+     |
+     +---- Rejected ----> Stop
+     |
+   Approved
+     |
+     v
+Execute Selected Tool
+     |
+     +---- RAG Search
+     |
+     +---- Qualifying Date Calculator
+     |
+     v
+Final Answer
+```

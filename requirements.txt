@@ -4,7 +4,7 @@ pandas
 scikit-learn
 requests
 pypdf
-python-dotenv
-requests
 google-genai
 chromadb
+langgraph
+pytest
