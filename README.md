@@ -458,3 +458,96 @@ Execute Selected Tool
      v
 Final Answer
 ```
+
+
+## Day 10 – Streamlit Dashboard & Checkpoint 2
+
+### Overview
+
+Day 10 focuses on building a Streamlit-based user interface for MatdarMitra and connecting it with the FastAPI backend.
+
+The dashboard allows users to ask voter-registration questions, receive source-based answers, provide feedback, and identify the appropriate voter-registration form through a three-question wizard.
+
+### Features Implemented
+
+**1. AI Assistant**
+- Connected Streamlit with the FastAPI `/ask` endpoint.
+- Accepts voter-registration questions.
+- Displays AI-generated answers with source citations.
+- Supports thumbs-up and thumbs-down feedback.
+
+**2. Form Chooser Wizard**
+- Uses three questions to understand the user's voter-registration situation.
+- Recommends Form 6 for new voter enrolment.
+- Recommends Form 8 for changes of residence or corrections.
+- Displays a document checklist from the backend records.
+- Provides preliminary guidance when no form is required.
+
+**3. AI Agent**
+- Connects with the `/agent` endpoint.
+- Displays approval requests before tool execution.
+- Supports approval and rejection of agent actions.
+
+**4. About MatdarMitra**
+- Displays the project overview.
+- Documents the technologies and key capabilities.
+
+### Technology Stack
+
+- Python
+- Streamlit
+- FastAPI
+- Retrieval-Augmented Generation (RAG)
+- Gemini Embeddings
+- ChromaDB
+- Groq LLM
+- LangGraph
+- Requests
+
+### How to Run
+
+Start the FastAPI backend:
+
+```bash
+python -m uvicorn app.main:app --reload
+```
+
+Open another terminal and start the Streamlit application:
+
+```bash
+python -m streamlit run ui/app.py
+```
+
+Open the local URL displayed in the terminal.
+
+### Application Screenshots
+
+Add your actual screenshots in `docs/screenshots/`.
+
+| Screenshot | File |
+|---|---|
+| AI Assistant | `ai-assistant.png` |
+| Form Chooser Wizard | `form-wizard.png` |
+| Main Dashboard | `dashboard.png` |
+
+![Dashboard](docs/screenshots/dashboard.png)
+
+![AI Assistant](docs/screenshots/ai-assistant.png)
+
+![Form Chooser](docs/screenshots/form-wizard.png)
+
+### Checkpoint 2
+
+**Objective:** Demonstrate the MatdarMitra application through a working Streamlit interface connected to the FastAPI backend.
+
+**Completion checklist:**
+- [ ] Streamlit application runs successfully.
+- [ ] AI Assistant returns answers with citations.
+- [ ] Feedback is saved successfully.
+- [ ] Form Chooser recommends the appropriate form.
+- [ ] Document checklist is displayed.
+- [ ] AI Agent approval and rejection work.
+- [ ] Application screenshots added to README.
+- [ ] Complete test suite passes.
+- [ ] Live demo completed.
+- [ ] Git tag `checkpoint-2` created and pushed.
