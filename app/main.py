@@ -10,7 +10,6 @@ from app.embed import embed_texts
 from app.vectorstore import search_documents, collection
 from app.rag import answer_question
 from app.graph import start_agent, resume_agent
-from langgraph.types import Command
 
 app = FastAPI(
     title="MatdarMitra API",

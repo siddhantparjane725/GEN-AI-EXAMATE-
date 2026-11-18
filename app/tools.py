@@ -60,7 +60,6 @@ def qualifying_date_calculator(dob, today=None):
     )
 
     age_17_reached = today >= seventeenth_birthday
-    age_18_reached = today >= eighteenth_birthday
 
     advance_candidate = (
         age_17_reached and today < qualifying_date

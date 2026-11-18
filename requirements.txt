@@ -7,4 +7,6 @@ pypdf
 google-genai
 chromadb
 langgraph
+python-dotenv
 pytest
+streamlit
