@@ -1,5 +1,6 @@
 from dataclasses import asdict, dataclass
 
+
 @dataclass
 class Record:
     form_number: str

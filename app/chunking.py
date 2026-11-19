@@ -2,8 +2,8 @@
 """Extract and split ECI PDF documents into metadata-rich chunks."""
 
 from pathlib import Path
-from pypdf import PdfReader
 
+from pypdf import PdfReader
 
 DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "raw"
 

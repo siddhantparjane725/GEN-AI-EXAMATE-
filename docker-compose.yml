@@ -1,0 +1,39 @@
+
+services:
+  api:
+    build: .
+    container_name: matdarmitra-api
+    command: python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /app
+    volumes:
+      - ./data/chroma_db:/app/data/chroma_db
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  ui:
+    build: .
+    container_name: matdarmitra-ui
+    command: python -m streamlit run ui/app.py --server.address 0.0.0.0 --server.port 8501
+    ports:
+      - "8501:8501"
+    environment:
+      MATDARMITRA_API: http://api:8000
+      PYTHONPATH: /app
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

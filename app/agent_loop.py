@@ -3,8 +3,8 @@
 
 import re
 
-from app.tools import qualifying_date_calculator
 from app.rag import answer_question
+from app.tools import qualifying_date_calculator
 
 
 def select_tool(question):

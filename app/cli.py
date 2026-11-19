@@ -1,5 +1,6 @@
 """Interactive CLI for MatdarMitra records."""
-from app.records import load_records, search, count_by, get_by_id
+from app.records import count_by, get_by_id, load_records, search
+
 
 def show(record):
     print("\n" + "-" * 70)

@@ -179,21 +179,20 @@ with chat_tab:
             if message["role"] == "assistant" and message.get("question"):
                 col1, col2 = st.columns(2)
 
-                if col1.button("👍 Helpful", key=f"up_{index}"):
-                    if save_feedback(
-                        message["question"],
-                        message["content"],
-                        "positive"
-                    ):
-                        st.success("Thank you for your feedback!")
+                if col1.button("👍 Helpful", key=f"up_{index}") and save_feedback(
+                    message["question"],
+                    message["content"],
+                    "positive"
+):
+                    st.success("Thank you for your feedback!")
+                        
 
-                if col2.button("👎 Not helpful", key=f"down_{index}"):
-                    if save_feedback(
-                        message["question"],
-                        message["content"],
-                        "negative"
-                    ):
-                        st.success("Feedback saved. Thank you!")
+                if col2.button("👎 Not helpful", key=f"down_{index}") and save_feedback(
+                    message["question"],
+                    message["content"],
+                    "negative"
+):
+                    st.success("Feedback saved. Thank you!")
 
     mode = st.radio(
         "Choose assistant mode",

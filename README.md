@@ -551,3 +551,136 @@ Add your actual screenshots in `docs/screenshots/`.
 - [ ] Complete test suite passes.
 - [ ] Live demo completed.
 - [ ] Git tag `checkpoint-2` created and pushed.
+
+# Day 11 – Testing, Code Quality and Docker Deployment
+
+## Overview
+
+Day 11 focused on improving the reliability, code quality and deployment of MatdarMitra. Automated testing was implemented using Pytest, code quality was checked using Ruff, and Docker was configured to run the FastAPI backend and Streamlit frontend together.
+
+## S1 – Testing and Code Quality
+
+### 1. Automated Testing with Pytest
+
+Created and expanded the `tests/` directory to test important application functionality.
+
+**Test coverage includes:**
+- Agent loop functionality.
+- LangGraph workflow and human approval process.
+- Qualifying date calculator.
+- API health endpoint.
+- Records retrieval.
+- Record search functionality.
+- Individual record retrieval.
+- RAG `/ask` endpoint using mocked retrieval and LLM responses.
+
+### 2. Code Quality with Ruff
+
+Used Ruff to identify and fix Python code quality issues.
+
+Command:
+
+```bash
+python -m ruff check .
+```
+
+Ruff was used to check:
+- Python coding standards.
+- Unused imports.
+- Code formatting issues.
+- Common programming errors.
+
+### 3. Run Tests
+
+```bash
+python -m pytest tests/ -v
+```
+
+Previously verified test result: **16 tests passed**.
+
+## S2 – Docker Deployment
+
+### 1. Docker Configuration
+
+Created the following Docker configuration files:
+
+| File | Purpose |
+|---|---|
+| `Dockerfile` | Builds the MatdarMitra application image |
+| `.dockerignore` | Excludes unnecessary and sensitive files from the build context |
+| `docker-compose.yml` | Runs the API and UI services together |
+
+### 2. Docker Services
+
+**API Service**
+- Built using FastAPI.
+- Runs on port `8000`.
+- Provides backend APIs and application functionality.
+- Includes a health check.
+
+**UI Service**
+- Built using Streamlit.
+- Runs on port `8501`.
+- Communicates with the API using Docker's internal service network.
+
+**Vector Database**
+- Uses ChromaDB for persistent vector storage.
+- Stores database files in the mounted `data/chroma_db` directory.
+
+### 3. Run MatdarMitra with Docker
+
+Make sure Docker Desktop is running.
+
+Build and start the application:
+
+```bash
+docker compose up --build
+```
+
+Check running containers:
+
+```bash
+docker compose ps
+```
+
+View application logs:
+
+```bash
+docker compose logs -f
+```
+
+Stop the application:
+
+```bash
+docker compose down
+```
+
+### 4. Application URLs
+
+| Service | URL |
+|---|---|
+| Streamlit UI | http://localhost:8501 |
+| FastAPI Backend | http://localhost:8000 |
+| Swagger API Documentation | http://localhost:8000/docs |
+
+## Day 11 – Learning Outcomes
+
+- Learned automated testing using Pytest.
+- Understood how to mock external LLM and retrieval functions during testing.
+- Improved Python code quality using Ruff.
+- Learned how to create a Dockerfile.
+- Understood Docker images and containers.
+- Learned Docker Compose for managing multiple services.
+- Connected a Streamlit frontend with a FastAPI backend inside Docker.
+- Implemented persistent ChromaDB storage using Docker volumes.
+- Successfully ran MatdarMitra using Docker Compose.
+
+## Day 11 Deliverables
+
+- `tests/` – Automated test cases.
+- `Dockerfile` – Docker image configuration.
+- `.dockerignore` – Docker build exclusions.
+- `docker-compose.yml` – Multi-container application configuration.
+- Updated `README.md` – Docker deployment instructions.
+
+**Day 11 Goal:** Improve application reliability through automated testing and deploy the MatdarMitra API and UI using Docker Compose.

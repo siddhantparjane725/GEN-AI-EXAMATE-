@@ -1,7 +1,7 @@
 
 from uuid import uuid4
 
-from app.graph import start_agent, resume_agent
+from app.graph import resume_agent, start_agent
 
 
 def test_agent_pauses_for_approval():

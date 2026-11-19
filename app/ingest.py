@@ -4,8 +4,8 @@ import re
 from pathlib import Path
 
 from pypdf import PdfReader
-from app.models import Record
 
+from app.models import Record
 
 # Project paths
 ROOT = Path(__file__).resolve().parents[1]
@@ -132,7 +132,7 @@ def process_forms():
             records.append(record.to_dict())
             print(f"[OK] Processed Form {number}: {filename}")
 
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - continue processing remaining forms
             print(f"[BAD ROW] {filename}: {exc}")
 
     return records
@@ -207,7 +207,7 @@ def process_faq():
         if missing_ids:
             print("[WARNING] FAQ IDs not extracted:", sorted(missing_ids))
 
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - report FAQ extraction failures
         print(f"[ERROR] FAQ extraction failed: {exc}")
 
     return records

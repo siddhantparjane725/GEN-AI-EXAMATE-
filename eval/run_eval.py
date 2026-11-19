@@ -5,8 +5,8 @@ import json
 from pathlib import Path
 
 from app.embed import embed_texts
-from app.vectorstore import search_documents
 from app.rag import answer_question
+from app.vectorstore import search_documents
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 
@@ -119,8 +119,10 @@ def save_report(reports):
     lines = [
         "# MatdarMitra Evaluation Results",
         "",
-        "Metric: percentage of answerable questions where at least "
-        "one expected source PDF appears in the retrieved results.",
+        (
+    "Metric: percentage of answerable questions where at least "
+    "one expected source PDF appears in the retrieved results."
+),
         "",
         "| Configuration | Chunk size (words) | Top K | Source hits | Hit rate | Q6 abstention |",
         "|---|---:|---:|---:|---:|---|"
@@ -149,8 +151,10 @@ def save_report(reports):
         "",
         f"## Winner: {winner}",
         "",
-        "The winner has the highest source hit rate. "
-        "Ties are resolved in favour of the smaller top_k.",
+        (
+    "The winner has the highest source hit rate. "
+    "Ties are resolved in favour of the smaller top_k."
+),
         "",
         "## Question-level Results"
     ])

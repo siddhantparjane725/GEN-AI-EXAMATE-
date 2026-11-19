@@ -2,9 +2,8 @@
 """RAG pipeline for MatdarMitra."""
 
 from app.embed import embed_texts
-from app.vectorstore import search_documents, collection
 from app.llm import call_groq, safe_response
-
+from app.vectorstore import collection, search_documents
 
 SYSTEM_PROMPT = """
 You are MatdarMitra, an assistant for Indian voter registration.

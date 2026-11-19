@@ -1,15 +1,15 @@
 
+import requests
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel, Field
-import requests
 
-from app.records import load_records, get_by_id
-from app.smart_search import smart_search
-from app.llm import chat_with_matdarmitra
 from app.embed import embed_texts
-from app.vectorstore import search_documents, collection
+from app.graph import resume_agent, start_agent
+from app.llm import chat_with_matdarmitra
 from app.rag import answer_question
-from app.graph import start_agent, resume_agent
+from app.records import get_by_id, load_records
+from app.smart_search import smart_search
+from app.vectorstore import collection, search_documents
 
 app = FastAPI(
     title="MatdarMitra API",
@@ -198,10 +198,10 @@ def semantic_search(
     except HTTPException:
         raise
 
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 - convert unexpected search failures to HTTP 500
         raise HTTPException(
             status_code=500,
-            detail=f"Semantic search failed: {str(error)}"
+            detail=f"Semantic search failed: {error!s}"
         )
 # 8. RAG-based question answering
 @app.post("/ask")
@@ -262,7 +262,7 @@ def agent_endpoint(request: AgentRequest):
 
     except HTTPException:
         raise
-    except Exception as error:
+    except Exception as error:  # noqa: BLE001 - return unexpected agent failures as HTTP 500
         raise HTTPException(
             status_code=500,
             detail=str(error)

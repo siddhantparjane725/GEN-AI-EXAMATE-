@@ -18,7 +18,7 @@ def load_records(path=None):
         records = json.load(file)
 
     if not isinstance(records, list):
-        raise ValueError("Dataset must contain a list of records")
+        raise TypeError("Dataset must contain a list of records")
 
     return records
 

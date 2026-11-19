@@ -58,7 +58,7 @@ def parse_response(content):
         data = json.loads(cleaned_content)
 
         if not isinstance(data, dict):
-            raise ValueError("Response is not a JSON object")
+            raise TypeError("Response is not a JSON object")
 
         answer = data.get("answer", "")
         confidence = data.get("confidence", 0)
@@ -123,7 +123,9 @@ def call_groq(system_prompt, user_prompt):
     result = response.json()
 
     if not isinstance(result, dict):
-        raise RuntimeError("Groq returned an invalid response payload")
+        raise RuntimeError(  # noqa: TRY004 - invalid API payload is a runtime failure
+    "Groq returned an invalid response payload"
+)
 
     choices = result.get("choices")
     if not isinstance(choices, list) or not choices:
