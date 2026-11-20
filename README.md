@@ -685,3 +685,54 @@ docker compose down
 - Updated `README.md` – Docker deployment instructions.
 
 **Day 11 Goal:** Improve application reliability through automated testing and deploy the MatdarMitra API and UI using Docker Compose.
+
+## Day 12 – CI/CD and Cloud Deployment
+
+### S1: Continuous Integration
+
+Implemented GitHub Actions to automate code quality and build validation.
+
+- Integrated Ruff for Python linting.
+- Integrated Pytest for automated testing.
+- Added Docker image build verification.
+- Configured CI to run on GitHub pushes and pull requests.
+- Created a feature branch and merged the pull request after successful CI validation.
+
+**Validation:**
+- Ruff checks passed.
+- All 16 tests passed locally.
+- Docker image build passed.
+- GitHub Actions workflow completed successfully.
+
+### S2: Cloud Deployment
+
+Successfully deployed MatdarMitra using Render.
+
+**Live Application:**
+
+https://matdarmitra-ui.onrender.com
+
+**Backend API:**
+
+https://matdarmitra-api.onrender.com
+
+**API Health Check:**
+
+https://matdarmitra-api.onrender.com/health
+
+**Deployment Details:**
+- Frontend: Streamlit
+- Backend: FastAPI
+- Containerization: Docker
+- Cloud Platform: Render
+- Database / Vector Store: ChromaDB
+
+**Deployment Validation:**
+- FastAPI backend deployed successfully.
+- Public `/health` endpoint verified.
+- Streamlit frontend deployed successfully.
+- Frontend successfully connected to the backend.
+
+### Day 12 Outcome
+
+MatdarMitra now has an automated CI workflow and a publicly accessible frontend and backend deployment.
