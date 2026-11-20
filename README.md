@@ -1,4 +1,4 @@
-https://github.com/siddhantparjane725/GEN-AI-EXAMATE-/actions/workflows/ci.yml/badge.svg?branch=main&utm_source=chatgpt.com
+https://github.com/siddhantparjane725/GEN-AI-EXAMATE-/actions/workflows/ci.yml/badge.svg?
 # MatdarMitra — Day 1
 # MatdarMitra 🇮🇳
 
