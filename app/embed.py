@@ -13,18 +13,29 @@ from app.chunking import load_all_chunks
 
 load_dotenv()
 
-API_KEY = os.getenv("GEMINI_API_KEY")
 MODEL = "gemini-embedding-001"
 OUTPUT_PATH = Path(__file__).resolve().parents[1] / "data" / "embedded_chunks.json"
 
-if not API_KEY:
-    raise ValueError("GEMINI_API_KEY not found in .env file")
+client = None
 
-client = genai.Client(api_key=API_KEY)
+
+def get_client():
+    """Create the Gemini client only when embeddings are requested."""
+    global client
+
+    if client is None:
+        api_key = os.getenv("GEMINI_API_KEY")
+
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found in .env file")
+
+        client = genai.Client(api_key=api_key)
+
+    return client
 
 
 def embed_texts(texts, task_type="RETRIEVAL_DOCUMENT"):
-    response = client.models.embed_content(
+    response = get_client().models.embed_content(
         model=MODEL,
         contents=texts,
         config=types.EmbedContentConfig(
