@@ -1,7 +1,6 @@
-
 """Explore MatdarMitra records using pandas."""
-
 import pandas as pd
+
 from app.records import load_records
 
 

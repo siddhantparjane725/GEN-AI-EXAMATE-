@@ -20,14 +20,10 @@ def check_form():
 
     if choice == "1":
         print("You need Form 6.")
-    elif choice == "2":
-        print("You need Form 8.")
-    elif choice == "3":
+    elif choice == "2" or choice == "3":
         print("You need Form 8.")
     elif choice == "4":
         print("You need Form 7.")
-    else:
-        print("Invalid choice!")
 while True:
     print("\n===== MATDARMITRA MENU =====")
     print("1. About MatdarMitra")
