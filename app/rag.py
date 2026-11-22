@@ -1,5 +1,9 @@
-
 """RAG pipeline for MatdarMitra."""
+
+import time
+from collections import OrderedDict
+from copy import deepcopy
+from threading import Lock
 
 from app.embed import embed_texts
 from app.llm import call_groq, safe_response
@@ -19,7 +23,12 @@ Rules:
 6. Return valid JSON with exactly these fields:
    answer, confidence, follow_up.
 """
+# Day 13: Simple in-memory response cache
+CACHE_TTL = 300
+CACHE_MAX_SIZE = 128
 
+response_cache = OrderedDict()
+cache_lock = Lock()
 
 def is_unanswerable_blo_question(question):
     """Identify the known Q6 question about ward-wise BLO details."""
@@ -61,7 +70,7 @@ def retrieve_chunks(question, top_k=3):
     return matches
 
 
-def answer_question(question, top_k=3):
+def _answer_question_uncached(question, top_k=3):
     """Generate a grounded answer with document citations."""
 
     # Required Day 8 evaluation rule for Q6.
@@ -145,11 +154,74 @@ Return valid JSON with exactly these fields:
             result["follow_up"]
         ),
         "citations": citations,
-        "retrieved_chunks": [
-            {
-                "chunk_id": chunk["chunk_id"],
-                "distance": chunk["distance"]
-            }
-            for chunk in matches
-        ]
+        "usage": result.get("usage", {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+        })
     }
+
+def answer_question(question, top_k=3):
+    """Return a cached answer or generate a fresh grounded answer."""
+
+    cache_key = (question.strip().casefold(), top_k)
+    current_time = time.monotonic()
+
+    with cache_lock:
+        # Remove expired cache entries.
+        expired_keys = [
+            key for key, value in response_cache.items()
+            if current_time - value["time"] >= CACHE_TTL
+        ]
+
+        for key in expired_keys:
+            response_cache.pop(key, None)
+
+        # Return cached answer if available.
+        if cache_key in response_cache:
+            cached_result = deepcopy(response_cache[cache_key]["result"])
+            response_cache.move_to_end(cache_key)
+
+            cached_result["cache_hit"] = True
+            cached_result["usage"] = {
+                "prompt_tokens": 0,
+                "completion_tokens": 0,
+                "total_tokens": 0
+            }
+
+            return cached_result
+
+    # Generate a fresh answer if there is no cache hit.
+    result = _answer_question_uncached(question, top_k)
+
+    result.setdefault("usage", {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0
+    })
+    result["cache_hit"] = False
+
+    with cache_lock:
+        response_cache[cache_key] = {
+            "time": time.monotonic(),
+            "result": deepcopy(result)
+        }
+
+        response_cache.move_to_end(cache_key)
+
+        # Keep the cache within its size limit.
+        while len(response_cache) > CACHE_MAX_SIZE:
+            response_cache.popitem(last=False)
+
+    return result
+
+def test_cache():
+    question = "Which form is used for new voter registration?"
+
+    first = answer_question(question)
+    second = answer_question(question)
+
+    print("First request:", first.get("cache_hit"))
+    print("Second request:", second.get("cache_hit"))
+    print("Second request tokens:", second.get("usage"))
+

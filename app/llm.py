@@ -136,7 +136,17 @@ def call_groq(system_prompt, user_prompt):
     if content is None:
         raise RuntimeError("Groq returned empty content")
 
-    return parse_response(content)
+    parsed = parse_response(content)
+
+    usage = result.get("usage") or {}
+
+    parsed["usage"] = {
+    "prompt_tokens": usage.get("prompt_tokens", 0),
+    "completion_tokens": usage.get("completion_tokens", 0),
+    "total_tokens": usage.get("total_tokens", 0),
+}
+
+    return parsed
 
 
 def chat_with_matdarmitra(question, records, prompt_version="1"):
@@ -159,13 +169,21 @@ def chat_with_matdarmitra(question, records, prompt_version="1"):
 
     # Do not ask the LLM to invent an answer without source material.
     if not matches:
-        return safe_response(
+        result = safe_response(
             "I could not find relevant information in the available "
             "Election Commission of India records. Please check the "
             "official ECI website or contact your election office.",
             0.0,
             "Would you like help with Form 6, Form 7, or Form 8?"
         )
+
+        result["usage"] = {
+            "prompt_tokens": 0,
+            "completion_tokens": 0,
+            "total_tokens": 0
+        }
+
+        return result
 
     system_prompt = read_prompt("system.txt")
     task_prompt = read_prompt(f"task_prompt_{prompt_version}.txt")

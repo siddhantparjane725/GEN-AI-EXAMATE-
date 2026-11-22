@@ -174,8 +174,7 @@ http://127.0.0.1:8000/docs
 ## Week 1 Milestone
 
 Day 4 completes the Week 1 development milestone for MatdarMitra.
-<<<<<<< HEAD
-=======
+
 
 **Project:** MatdarMitra – ECI Voter Registration Assistance System  
 **Track:** GenAI Examate – Sanjivani SJ-19
@@ -734,5 +733,4 @@ https://matdarmitra-api.onrender.com/health
 - Frontend successfully connected to the backend.
 
 ### Day 12 Outcome
-
 MatdarMitra now has an automated CI workflow and a publicly accessible frontend and backend deployment.

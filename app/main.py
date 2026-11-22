@@ -1,6 +1,8 @@
+import logging
+import time
 
 import requests
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from app.embed import embed_texts
@@ -11,28 +13,55 @@ from app.records import get_by_id, load_records
 from app.smart_search import smart_search
 from app.vectorstore import collection, search_documents
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+
+logger = logging.getLogger("matdarmitra")
+
 app = FastAPI(
     title="MatdarMitra API",
     description="ECI voter registration assistance API",
     version="1.0.0"
 )
+@app.middleware("http")
+async def log_request_latency(request: Request, call_next):
+    start_time = time.perf_counter()
+
+    response = await call_next(request)
+
+    latency_ms = (time.perf_counter() - start_time) * 1000
+
+    logger.info(
+        "request=%s method=%s status=%s latency_ms=%.2f",
+        request.url.path,
+        request.method,
+        response.status_code,
+        latency_ms
+    )
+
+    response.headers["X-Response-Time-ms"] = f"{latency_ms:.2f}"
+
+    return response
 
 class AgentRequest(BaseModel):
-    question: str | None = None
-    thread_id: str
+    question: str | None = Field(default=None, max_length=1000)
+    thread_id: str = Field(..., min_length=1, max_length=100)
     approved: bool | None = None
 
 
 class ChatRequest(BaseModel):
-    question: str = Field(..., min_length=1)
+    question: str = Field(..., min_length=1, max_length=1000)
     prompt_version: str = "1"
 
+
 class AskRequest(BaseModel):
-    question: str = Field(..., min_length=1)
+    question: str = Field(..., min_length=1, max_length=1000)
 
 
 class QuestionRequest(BaseModel):
-    question: str = Field(..., min_length=1)
+    question: str = Field(..., min_length=1, max_length=1000)
 
 
 def get_records():
@@ -130,6 +159,8 @@ def ask_question(request: QuestionRequest):
 
 
 # 6. Chat with MatdarMitra
+
+# 6. Chat with MatdarMitra
 @app.post("/chat")
 def chat(request: ChatRequest):
     try:
@@ -139,6 +170,16 @@ def chat(request: ChatRequest):
             question=request.question,
             records=records,
             prompt_version=request.prompt_version
+        )
+
+        usage = result.get("usage", {})
+
+        logger.info(
+            "endpoint=/chat prompt_tokens=%s completion_tokens=%s "
+            "total_tokens=%s",
+            usage.get("prompt_tokens", 0),
+            usage.get("completion_tokens", 0),
+            usage.get("total_tokens", 0)
         )
 
         return result
@@ -203,14 +244,28 @@ def semantic_search(
             status_code=500,
             detail=f"Semantic search failed: {error!s}"
         )
+
 # 8. RAG-based question answering
 @app.post("/ask")
 def ask(request: AskRequest):
     try:
-        return answer_question(
+        result = answer_question(
             question=request.question,
             top_k=3
         )
+
+        usage = result.get("usage", {})
+
+        logger.info(
+            "endpoint=/ask prompt_tokens=%s completion_tokens=%s "
+            "total_tokens=%s cache_hit=%s",
+            usage.get("prompt_tokens", 0),
+            usage.get("completion_tokens", 0),
+            usage.get("total_tokens", 0),
+            result.get("cache_hit", False)
+        )
+
+        return result
 
     except requests.RequestException:
         raise HTTPException(
