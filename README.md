@@ -659,9 +659,9 @@ docker compose down
 
 | Service | URL |
 |---|---|
-| Streamlit UI | http://localhost:8501 |
-| FastAPI Backend | http://localhost:8000 |
-| Swagger API Documentation | http://localhost:8000/docs |
+| Streamlit UI | (https://matdarmitra-ui.onrender.com) |
+| FastAPI Backend | (https://matdarmitra-api.onrender.com) |
+| Swagger API Documentation | https://matdarmitra-api.onrender.com/doc |
 
 ## Day 11 – Learning Outcomes
 
