@@ -734,3 +734,239 @@ https://matdarmitra-api.onrender.com/health
 
 ### Day 12 Outcome
 MatdarMitra now has an automated CI workflow and a publicly accessible frontend and backend deployment.
+
+# Day 13 – Production Improvements & Project Documentation
+
+## S1 – Production Improvements
+
+### 1. API Latency Monitoring
+- Implemented FastAPI middleware to measure request processing time.
+- Added latency logging in milliseconds.
+- Added the `X-Response-Time-ms` response header.
+- Logs include request path, HTTP method and response status.
+
+### 2. Token Usage Tracking
+- Integrated Groq token usage tracking.
+- Captures:
+  - Prompt tokens
+  - Completion tokens
+  - Total tokens
+- Added token usage logging for `/ask` and `/chat`.
+- Cache-hit responses report zero new LLM tokens.
+
+### 3. Response Caching
+Implemented a simple in-memory response cache to reduce repeated LLM calls.
+
+| Configuration | Value |
+|---|---:|
+| Cache TTL | 300 seconds |
+| Maximum cache entries | 128 |
+| Cache key | Normalized question + top_k |
+| Cache-hit behavior | Returns stored response |
+| Cache storage | In-memory |
+
+### 4. Input Validation
+- Added question length validation.
+- Maximum question length: 1,000 characters.
+- Applied validation to relevant API request models and search endpoints.
+
+### 5. Prompt-Injection Regression Test
+- Added an automated test for prompt-boundary handling.
+- Verified that user input does not replace the fixed system prompt.
+- Verified separation between user questions and retrieved ECI context.
+
+This is a regression test and does not guarantee complete protection against all prompt-injection attacks.
+
+## S2 – Project Documentation and Presentation
+
+### 1. Problem Statement
+
+Indian citizens often face difficulties understanding voter registration procedures, identifying the correct Election Commission of India (ECI) form, and finding the required supporting documents.
+
+MatdarMitra addresses this problem through an AI-powered voter registration assistant that provides simple, document-grounded guidance.
+
+### 2. System Architecture
+
+```mermaid
+flowchart TD
+    A[User] --> B[Streamlit Frontend]
+    B --> C[FastAPI Backend]
+
+    C --> D[RAG Pipeline]
+    C --> E[Chat Endpoint]
+    C --> F[LangGraph Agent]
+
+    D --> G[Gemini Embeddings]
+    G --> H[ChromaDB Vector Database]
+    H --> I[Retrieved ECI Context]
+    I --> J[Groq LLM]
+    J --> K[Answer with Citations]
+
+    E --> L[TF-IDF Smart Search]
+    L --> J
+
+    F --> M[Tool Selection]
+    M --> D
+    M --> N[Qualifying Date Calculator]
+
+    K --> B
+```
+
+### 3. Technology Stack
+
+| Component | Technology |
+|---|---|
+| Programming Language | Python |
+| Frontend | Streamlit |
+| Backend | FastAPI |
+| LLM Provider | Groq |
+| Embedding Model | Gemini Embeddings |
+| Vector Database | ChromaDB |
+| AI Agent Framework | LangGraph |
+| Search | TF-IDF and Cosine Similarity |
+| Testing | Pytest |
+| Code Quality | Ruff |
+| Containerization | Docker |
+| CI/CD | GitHub Actions |
+| Cloud Deployment | Render |
+
+### 4. Production Notes and Results
+
+| Metric | Result |
+|---|---:|
+| Cache TTL | 300 seconds |
+| Maximum cache entries | 128 |
+| Maximum question length | 1,000 characters |
+| Automated tests | 18 passed |
+| Ruff checks | Passed |
+| Request latency monitoring | Implemented |
+| Token usage tracking | Implemented |
+| Prompt-injection regression test | Passed |
+
+**Performance measurements:**
+
+| Measurement | Result |
+|---|---|
+| First `/ask` request latency | Pending measurement |
+| Cache-hit `/ask` latency | Pending measurement |
+| First request prompt tokens | Pending measurement |
+| First request completion tokens | Pending measurement |
+| First request total tokens | Pending measurement |
+| Cache-hit new LLM tokens | 0 |
+
+Actual latency and token measurements will be added after successful live API testing.
+
+### 5. Demo Video
+
+**Status: Coming Soon**
+
+The demonstration video will cover:
+
+1. MatdarMitra application dashboard.
+2. AI Assistant with source citations.
+3. Voter Form Chooser.
+4. LangGraph AI Agent and approval workflow.
+5. FastAPI backend and API documentation.
+
+**YouTube Demo Link:** Coming Soon.
+
+### 6. Deployment Links
+
+- **Frontend:** https://matdarmitra-ui.onrender.com
+- **Backend API:** https://matdarmitra-api.onrender.com
+- **API Documentation:** https://matdarmitra-api.onrender.com/docs
+- **GitHub Repository:** https://github.com/siddhantparjane725/GEN-AI-EXAMATE-
+
+### 7. Known Limitations
+
+- Response caching is in-memory and resets when the API process restarts.
+- Cache entries expire after five minutes.
+- LLM responses depend on external API availability.
+- Render free instances may sleep when inactive.
+- Answers are limited by the information available in the indexed ECI documents.
+
+### Day 13 Outcome
+
+Completed production-oriented improvements, including API latency monitoring, token usage tracking, response caching, input validation and prompt-injection regression testing.
+
+Updated project documentation with the problem statement, system architecture, technology stack, production configuration, test results and deployment information.
+
+**Validation:** 18 automated tests passed and Ruff checks passed.
+
+
+
+
+## Production Notes
+
+### Performance and Monitoring
+
+| Metric | Value |
+|---|---:|
+| First `/ask` request latency | Pending measurement |
+| Cache-hit `/ask` latency | Pending measurement |
+| First request prompt tokens | Pending measurement |
+| First request completion tokens | Pending measurement |
+| First request total tokens | Pending measurement |
+| Cache-hit new LLM tokens | 0 |
+| Cache TTL | 300 seconds |
+| Maximum cache entries | 128 |
+| Maximum question length | 1,000 characters |
+| Automated tests | 18 passed |
+| Ruff code quality checks | Passed |
+
+### Monitoring Features
+
+- Request latency is measured and logged in milliseconds.
+- Groq prompt, completion and total token usage are tracked.
+- Cache hits are logged separately.
+- Cached responses avoid repeated LLM calls.
+- Input validation limits questions to 1,000 characters.
+
+### Production Limitations
+
+- Response caching uses in-memory storage.
+- Cache entries expire after 300 seconds.
+- Cache resets when the API process restarts.
+- Render free instances may sleep when inactive.
+
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    A[User] --> B[Streamlit Frontend]
+    B --> C[FastAPI Backend]
+
+    C --> D[RAG Pipeline]
+    C --> E[Chat Endpoint]
+    C --> F[LangGraph Agent]
+
+    D --> G[Gemini Embeddings]
+    G --> H[ChromaDB Vector Database]
+    H --> I[ECI Document Context]
+    I --> J[Groq LLM]
+    J --> K[Answer with Citations]
+
+    E --> L[TF-IDF Smart Search]
+    L --> J
+
+    F --> M[Tool Selection]
+    M --> D
+    M --> N[Qualifying Date Calculator]
+
+    K --> B
+```
+
+## Demo Video
+
+**Status: Coming Soon**
+
+The MatdarMitra demonstration video will cover:
+
+1. Application dashboard.
+2. AI Assistant and source citations.
+3. Voter Form Chooser.
+4. LangGraph AI Agent and approval workflow.
+5. FastAPI endpoints and API documentation.
+
+**YouTube Demo:** Coming Soon.
