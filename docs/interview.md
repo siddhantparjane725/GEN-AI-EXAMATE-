@@ -1,4 +1,11 @@
-Core Technical Questions
+# MatdarMitra Interview Preparation
+
+## 60-Second Pitch
+
+MatdarMitra is an AI-powered voter-registration assistant that helps people understand Election Commission of India procedures, identify relevant forms, and find supporting information. The application uses a Streamlit frontend and a FastAPI backend. Its retrieval-augmented generation pipeline chunks ECI documents, creates Gemini embeddings, searches them with ChromaDB, and uses Groq to generate answers grounded in retrieved passages, with citations and a fallback when the documents do not support an answer. LangGraph coordinates the agent's multi-step tools and approval flow. I also added input validation, latency and token-usage logging, and a bounded response cache. In the documented retrieval evaluation, the system found a source for all 14 test questions; that measures retrieval, not answer accuracy. The project is deployed on Render, and its latest recorded checks are 18 passing tests and passing Ruff checks.
+
+## Core Technical Questions
+
 1. What is RAG?
 RAG stands for Retrieval-Augmented Generation. It retrieves relevant information from a knowledge base and
 gives that context to a language model to generate an answer. This helps MatdarMitra answer questions using
@@ -30,12 +37,12 @@ functionality, and provides interactive API documentation.
 10. What are the limitations of MatdarMitra?
 Answer quality depends on the quality and freshness of official source documents. The deployed application also
 depends on internet connectivity and availability of its cloud AI services.
-MatdarMitra — Demo Preparation Page 2
-Failure Fixed: RAG Response Caching
-11. Tell us about one failure or problem you fixed.
-When the same question was asked repeatedly, the application could repeat retrieval and language-model
-generation. This caused unnecessary processing and could use additional API tokens. I improved this by adding
-an in-memory response cache to the RAG pipeline.
+
+## Hardest-Problem Story: RAG Response Caching
+
+11. Tell us about the hardest problem you solved.
+The hardest problem was reducing repeated RAG work without returning the wrong answer or letting cached data grow without bounds. Repeated questions could trigger retrieval and another language-model call, adding latency and using provider tokens. I added a cache keyed by the normalized question and retrieval setting, with a 300-second expiry and a 128-entry limit. Cache hits return a copy of the stored result and report zero new LLM tokens. I verified the behavior with a test that calls the same question twice: the first call is a miss, the second is a hit, and retrieval and generation each run only once. The cache is process-local, so it resets on restart; the test verifies cache behavior, not a real-world latency improvement.
+
 12. How does your cache work?
 The cache uses Python's OrderedDict. It keeps responses for up to 300 seconds, stores at most 128 entries,
 uses a normalized question and top_k as the cache key, and removes expired or older entries when needed. The
